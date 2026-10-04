@@ -1,0 +1,3 @@
+- [x] Apply the chosen ivory-and-blueprint editorial layout and typography.
+- [x] Add premium motion with reduced-motion support.
+- [x] Verify desktop and mobile presentation and interactions.
