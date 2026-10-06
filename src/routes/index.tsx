@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, Building2, DraftingCompass, Facebook, HardHat, Mail, Menu, MessageCircle, Phone, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { type FormEvent } from "react";
+import { ArrowDown, ArrowRight, ArrowUpRight, Building2, DraftingCompass, Facebook, HardHat, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiteFooter, SiteHeader, useReveal } from "@/components/SiteChrome";
+import { projects as allProjects } from "@/data/site";
 import hero from "@/assets/tdm-hero.jpg";
-import villa from "@/assets/tdm-villa.jpg";
-import interior from "@/assets/tdm-interior.jpg";
-import commercial from "@/assets/tdm-commercial.jpg";
 
 
 export const Route = createFileRoute("/")({
@@ -28,11 +27,7 @@ const services = [
   { number: "03", icon: HardHat, title: "Construction", description: "Full project management and construction with high-quality materials." },
 ];
 
-const projects = [
-  { image: villa, title: "Modern Villa", category: "Residential concept", width: 1104, height: 1312 },
-  { image: interior, title: "Luxury Interior", category: "Interior concept", width: 1104, height: 912 },
-  { image: commercial, title: "Commercial Space", category: "Commercial concept", width: 1104, height: 912 },
-];
+const projects = allProjects.slice(0, 3).map((p, i) => ({ ...p, category: `${p.category} project`, width: 1104, height: i === 0 ? 1312 : 912 }));
 
 const qualifications = [
   { number: "01", title: "Design-led approach", description: "Thoughtful planning shaped around the site, the brief, and the people who will use the space." },
@@ -41,47 +36,8 @@ const qualifications = [
   { number: "04", title: "Build perspective", description: "An approach that considers materials and construction alongside design intent." },
 ];
 
-function Brand() {
-  return <a href="#home" className="brand" aria-label="TDM Architects, back to home">
-    <img src="/logo_removeback.png" alt="TDM Logo" className="brand-mark" width="64" height="64" onError={(e) => e.currentTarget.style.display = 'none'} />
-    <span className="brand-name"><strong>TDM</strong><span>ARCHITECTS</span></span>
-  </a>;
-}
-
 function Index() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-
-    
-    let observer: IntersectionObserver;
-    const initObserver = () => {
-      const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-      elements.forEach((element) => observer.observe(element));
-      document.documentElement.classList.add("motion-ready");
-    };
-
-    initObserver();
-    
-    const timeout = setTimeout(() => {
-      if (observer) observer.disconnect();
-      initObserver();
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-      if (observer) observer.disconnect();
-      document.documentElement.classList.remove("motion-ready");
-    };
-  }, []);
+  useReveal();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -97,19 +53,7 @@ function Index() {
   }
 
   return <main>
-    <header className="site-header">
-        <div className="site-header-inner container-wide">
-          <Brand />
-          <nav className="desktop-nav" aria-label="Main navigation">
-            <a href="#purpose">Purpose</a><a href="#services">Services</a><a href="#portfolio">Portfolio</a><a href="#qualifications">Qualifications</a><a href="#contact">Contact</a>
-          </nav>
-          <Button variant="line" size="feature" className="header-quote" asChild><a href="#contact">Start a project <ArrowUpRight aria-hidden="true" /></a></Button>
-          <Button variant="line" size="icon" className="mobile-menu-toggle" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</Button>
-        </div>
-        {menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">
-          {[ ["Home", "home"], ["Purpose", "purpose"], ["Services", "services"], ["Portfolio", "portfolio"], ["Qualifications", "qualifications"], ["Contact", "contact"] ].map(([label, id]) => <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}<ArrowUpRight size={17} /></a>)}
-        </nav>}
-    </header>
+    <SiteHeader />
     <section id="home" className="hero">
       <img className="hero-image" src={hero} alt="Contemporary tropical home with illuminated interiors and reflecting pool" width="1920" height="1200" fetchPriority="high" />
       <div className="hero-shade" />
@@ -117,10 +61,10 @@ function Index() {
 
       <div className="hero-content container-wide">
         <div className="hero-copy">
-          <p className="eyebrow hero-eyebrow"><span className="eyebrow-line" /> ARCHITECTURE · ENGINEERING · CONSTRUCTION</p>
+          <p className="eyebrow hero-eyebrow"><span className="eyebrow-line" /> ARCHITECTURE Â· ENGINEERING Â· CONSTRUCTION</p>
           <h1><span>TDM</span><br />Architectural<br /><em>Excellence.</em></h1>
           <div className="hero-intro"><p className="hero-subtitle">Considered spaces, precise engineering, and construction built around the way you live. In Sri Lanka, from the first idea to the final detail.</p>
-          <Button variant="hero" size="feature" asChild><a href="#contact">Get a Free Quote <ArrowUpRight aria-hidden="true" /></a></Button></div>
+          <Button variant="hero" size="feature" asChild><a href="/contact">Contact Us <ArrowUpRight aria-hidden="true" /></a></Button></div>
         </div>
       </div>
       <div className="hero-bottom container-wide"><span>DESIGNED WITH PURPOSE. BUILT TO LAST.</span><a href="#services" aria-label="Explore our services">EXPLORE OUR WORK <ArrowDown size={15} /></a></div>
@@ -129,7 +73,7 @@ function Index() {
     <section id="purpose" className="purpose section-pad">
       <div className="container-wide purpose-grid" data-reveal>
         <div><p className="eyebrow"><span className="eyebrow-line" /> OUR PURPOSE</p><span className="purpose-number">01 / 04</span></div>
-        <div><h2>Architecture with<br /><span>intention.</span></h2><p>To shape places that feel as good as they function—where design ambition meets everyday life, and every detail has a reason to be there.</p><a className="text-link" href="#services">Discover what we do <ArrowUpRight size={17} aria-hidden="true" /></a></div>
+        <div><h2>Where vision<br /><span>becomes structure.</span></h2><p>To shape places that feel as good as they functionâ€”where design ambition meets everyday life, and every detail has a reason to be there.</p><div className="link-row"><Link className="text-link" to="/about">About TDM <ArrowUpRight size={17} aria-hidden="true" /></Link><Link className="text-link" to="/services">Discover what we do <ArrowUpRight size={17} aria-hidden="true" /></Link></div></div>
       </div>
     </section>
 
@@ -146,6 +90,7 @@ function Index() {
             <ArrowUpRight className="service-arrow" size={22} strokeWidth={1.5} aria-hidden="true" />
           </article>)}
         </div>
+        <div className="section-more link-row" data-reveal><Link className="text-link" to="/services">View all services <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
       </div>
     </section>
 
@@ -161,6 +106,7 @@ function Index() {
             <div className="project-overlay"><span>{project.category}</span><h3>{project.title}</h3><span className="project-index">0{index + 1} / 03</span></div>
           </article>)}
         </div>
+        <div className="section-more link-row" data-reveal><Link className="text-link" to="/projects">View all projects <ArrowUpRight size={17} aria-hidden="true" /></Link></div>
       </div>
     </section>
 
@@ -205,6 +151,6 @@ function Index() {
       </div>
     </section>
 
-    <footer className="footer"><div className="container-wide footer-inner"><Brand /><p>© 2026 TDM Architect &amp; Engineering. All Rights Reserved.</p><a href="tel:+94761970767" aria-label="Call TDM Architects"><Phone size={18} /></a></div></footer>
+    <SiteFooter />
   </main>;
 }
